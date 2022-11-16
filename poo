@@ -1,0 +1,191 @@
+
+from datetime import datetime
+
+class Usuario:
+
+    def _init_(self, id: int,nombre: str, correo: str):    # Esta funcion es la que crea el contructor 
+        self.id = id                                       # Es linea es la que accede al atributo del contructor
+        self.nombre = nombre
+        self.correo = correo
+
+    def get_id(self):                                      # Esta funcion es la que obtiene el id del usuario
+        return self.id
+    def set_id(self, id: int):
+        self.id = id
+
+    def get_nombre(self):                                 #Esta funcion es la que obtiene el nombre del usuario
+        return self.nombre
+    def set_nombre(self, nombre: str):
+        self.nombre = nombre
+
+    def get_correo(self):                                 # Esta funcion es la que obtiene el correo del usuario
+        return self.correo
+    def set_correo(self, correo: str):
+        self.correo = correo
+
+class Vehiculo():                                          # Se crea una clase vehiculo
+
+    def _init_(self, tipo: str, usuario: Usuario):          # Se crea el contructor del vehiculo
+        self.tipo = tipo
+        self.usuario = usuario
+
+    def get_tipo(self):
+        return self.tipo
+    def set_tipo(self, tipo: str):
+        self.tipo = tipo
+
+    def get_usuario(self):
+        return self.usuario;
+    def set_usuario(self, usuario:Usuario):
+        self.usuario = usuario
+
+class Cuenta:                       # Se crea la clase cuenta
+
+    def _init_(self, id: int, usuario: Usuario):    # Se crea el contructor de la clase cuenta
+        self.id = id
+        self.usuario = usuario
+
+    def get_id(self):               #Se obtiene el id de la cuenta
+        return self.id
+    def set_id(self, id: int):
+        self.id = id
+
+    def get_nombre(self):       # se obtiene el nombre de la cuenta
+        return self.nombre          
+    def set_nombre(self, nombre: str):
+        self.nombre = nombre
+
+class Ingresos:         # Se crea la clase ingresos
+
+    def _init_(self, usuario: Usuario, auto: Vehiculo):     #Se crea el contructor de la clase de ingresos
+        self.usuario = usuario                               # Se accede a los atributos del contructor
+        self.auto = auto
+
+class Reservas:                                                #Se crea la clase reservas
+
+    def _init_(self, fecha: datetime, usuario: Usuario, auto: Vehiculo):        # Se crea el contructor de la clase de reservas
+        sefl.fecha = fecha
+        self.usuario = usuario
+        self.auto = auto
+
+class Estacionamiento:
+
+    def _init_(self, nombre, espacios_SUV: int, espacios_van, apertura: datetime, cierre: datetime):
+        self.nombre = nombre
+        self.espacios_SUV = espacios_SUV
+        self.espacios_restante_SUV = espacios_SUV
+        self.espacios_van = espacios_van
+        self.espacios_restantes_van = espacios_van
+        self.apertura = apertura
+        self.cierre = cierre
+        self.cuentas = []
+        self.ingresados = []                 
+        self.reservas = []
+
+
+    def get_nombre(self):
+        return self.nombre
+    def set_nombre(self, nombre: str):
+        self.nombre = nombre
+
+    def get_espacios_SUV(self):
+        return self.espacios_SUV
+    def set_espacios_SUV(self, espacios_SUV: int):
+        self.espacios_SUV = espacios_SUV
+
+    def get_espacios_restantes_SUV(self):
+        return self.espacios_restantes_SUV
+    def set_eespacios_restantes_SUV(self, espacios_restantes_SUV: int):
+        self.espacios_restantes_SUV = espacios_restantes_SUV
+
+    def get_espacios_van(self):
+        return self.espacios_van
+    def set_espacios_van(self, espacios_van: int):
+        self.espacios_van = espacios_van
+
+    def get_espacios_restantes_van(self):
+        return self.espacios_restantes_van
+    def set_espacios_restantes_van(self, espacios_restantes_van: int):
+        self.espacios_restantes_van = espacios_restantes_van
+
+    def get_apertura(self):
+        return self.apertura
+    def set_apertura(self, apertura: datetime):
+        self.apertura = apertura
+
+    def get_cierre(self):
+        return self.cierre
+    def set_cierre(self, cierre: datetime):
+        self.cierre = cierre
+
+    def get_cuentas(self):
+        return self.cuentas
+
+    def get_ingresados(self):
+        return self.ingresados
+
+    def get_reservas(self):
+        return self.reservas
+
+    def ingresar_vehiculo(self, usuario: Usuario, auto: Vehiculo, hora_entrada: datetime):            # Esta funcion es la guarda un vehiculo en estacionamiento
+        if hora_entrada < self.get_apertura() and hora_entrada > self.get_cierre():
+            print("El estacionamiento se encuentra cerrado en este momento.")
+        else:
+            if auto.get_tipo() == "van":
+                if self.get_espacios_restantes_van() > 0:
+                    if self.ingresados.index(auto):
+                        print("El vehiculo ya aparece ingresado en el estacionamiento")
+                    else:
+                        self.set_espacios_restantes_van(self.get_espacios_restantes_van() - 1)
+                        ingreso = Ingresos(usuario, auto)
+                        self.ingresados.append(ingreso)
+            if auto.get_tipo() == "SUV":
+                if self.get_espacios_restantes_SUV() > 0:
+                    if self.ingresados.index(auto):
+                        print("El vehiculo ya aparece ingresado en el estacionamiento")
+                    else:
+                        self.set_espacios_restantes_SUV(self.get_espacios_restantes_SUV()-1)
+                        ingreso = Ingresos(usuario, auto)
+                        self.ingresados.append(ingreso)
+
+    def crear_cuenta(self, usuario: Usuario):                          # Esta funcion es la que crea una cuenta en el estacionamiento
+        id_cuenta = len(self.cuentas)
+        if self.cuentas.index(usuario):
+            print("Este usuario ya tiene unacuenta creada")
+        else:
+            self.cuentas.append((id_cuenta+1), usuario)
+            print("Cuenta creada con exito")
+
+    def reservar_espacio(self, fecha_reserva: datetime, auto: Vehiculo, usuario: Usuario):
+        if self.cuentas.index(usuario):
+            print("No se puede hacer la reserva porque el usuario no tiene una cuenta creada")
+        else:
+            reserva = Reservas(fecha_reserva, usuario, auto)
+            self.reservas.append(reserva)
+            print("reserva hecha con exito")
+
+
+
+if _name_ == "_main_":          #Se crea el main
+    estacionamiento = Estacionamiento("La principal", 20, 25, "08:00:00", "18:00:00") 
+    while(True):
+        print("ELIIJA UNA OPCION\n\n")
+        print("1. Crear usuario")
+        print("2. Crear vehiculo")
+        print("3. Crear cuenta")
+        print("4. Ingresar auto al estacionamiento")
+        print("5. Hacer reserva")
+        print("6. Salir")
+        op = input()
+        if op == 1:
+            pass
+        if op == 2:
+            pass
+        if op == 3:
+            pass
+        if op == 4:
+            pass
+        if op == 5:
+            pass
+        if op == 6:
+            break
